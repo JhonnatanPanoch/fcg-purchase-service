@@ -69,7 +69,7 @@ builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Servi�o de Pagamentos", Description = "Este servi�o gerencia todo o fluxo de compras, registrando as transa��es e efetuando o pagamento.", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Serviço de Pagamentos", Description = "Este serviço gerencia todo o fluxo de compras, registrando as transações e efetuando o pagamento.", Version = "v1" });
     c.EnableAnnotations();
     var securityScheme = new OpenApiSecurityScheme
     {
