@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fcgPurchaseServiceDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  fcg-purchase-service:
+    container_name: fcg-purchase-service
+    build:
+      context: ../
+      dockerfile: ./src/Fcg.Games.Purchase.Api/Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=fcgPurchaseServiceDb;Username=postgres;Password=postgres
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+  postgres_data:

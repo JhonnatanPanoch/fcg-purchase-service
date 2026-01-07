@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fcg-purchase-service-config
+  labels:
+    app: fcg-purchase-service
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Services__UsuarioApiUrl: "http://ab3417f066e0447b8900b79d288d1f65-802665187.sa-east-1.elb.amazonaws.com"
+  Services__GamesApiUrl: "https://a36809a03b605470b9d9b576bc6d98fb-1215978752.sa-east-1.elb.amazonaws.com"
+  JwtSettings__Issuer: "FiapCloudGames"
+  JwtSettings__Audience: "FiapCloudGamesUsers"
+  JwtSettings__ExpirationMinutes: "60"

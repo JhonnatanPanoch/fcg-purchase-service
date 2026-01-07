@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-purchase-service
+  labels:
+    app: fcg-purchase-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fcg-purchase-service
+  template:
+    metadata:
+      labels:
+        app: fcg-purchase-service
+    spec:
+      containers:
+      - name: fcg-purchase-service
+        image: 363256880455.dkr.ecr.sa-east-1.amazonaws.com/fcg-purchase-service
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: fcg-purchase-service-config
+        - secretRef:
+            name: fcg-purchase-service-secret
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /swagger/index.html
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /swagger/index.html
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
