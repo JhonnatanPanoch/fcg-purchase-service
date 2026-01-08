@@ -15,7 +15,7 @@ public class NewRelicFormatter : ITextFormatter
             level = logEvent.Level.ToString(),
             attributes = new
             {
-                app = "Fcg",
+                app = "Fcg Purchase",
                 source = logEvent.Properties.ContainsKey("SourceContext") ? logEvent.Properties["SourceContext"].ToString().Trim('"') : null,
                 exception = logEvent.Exception?.ToString()
             }
