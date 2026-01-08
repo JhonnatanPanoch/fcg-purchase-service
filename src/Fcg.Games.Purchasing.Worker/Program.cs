@@ -6,8 +6,34 @@ using Fcg.Games.Purchasing.Worker.Configurations;
 using Fcg.Games.Purchasing.Worker.MqConsumers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Sinks.Http.BatchFormatters;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+#region NewRelic
+builder.Services.Configure<NewRelicSettings>(builder.Configuration.GetSection("NewRelicSettings"));
+
+var newRelicSettings = builder.Configuration.GetSection("NewRelicSettings").Get<NewRelicSettings>()
+    ?? throw new InvalidOperationException("NewRelicSettings não foi configurado corretamente.");
+var newRelicOptions = Options.Create(newRelicSettings);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
+    .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Unknown")
+    .WriteTo.Console()
+    .WriteTo.DurableHttpUsingFileSizeRolledBuffers(
+        requestUri: "https://log-api.newrelic.com/log/v1",
+        textFormatter: new NewRelicFormatter(),
+        batchFormatter: new ArrayBatchFormatter(),
+        httpClient: new NewRelicHttpClient(newRelicOptions))
+    .CreateLogger();
+
+builder.Services.AddSerilog();
+#endregion
 
 builder.Services.AddHostedService<Worker>();
 
