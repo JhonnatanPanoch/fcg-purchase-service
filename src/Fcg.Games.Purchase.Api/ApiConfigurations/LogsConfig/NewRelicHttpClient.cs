@@ -1,15 +1,18 @@
-﻿using Serilog.Sinks.Http;
+﻿using Microsoft.Extensions.Options;
+using Serilog.Sinks.Http;
 
 namespace Fcg.Games.Purchase.Api.ApiConfigurations.LogsConfig;
 
 public class NewRelicHttpClient : IHttpClient
 {
     private readonly HttpClient _httpClient;
+    private readonly NewRelicSettings _settings;
 
-    public NewRelicHttpClient()
+    public NewRelicHttpClient(IOptions<NewRelicSettings> settings)
     {
         _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Add("Api-Key", "0dbf2540aad7a0756c29a36d5e151db7FFFFNRAL");
+        _settings = settings.Value;
+        _httpClient.DefaultRequestHeaders.Add("Api-Key", _settings.SecretKey);
     }
 
     public void Configure(IConfiguration configuration)
